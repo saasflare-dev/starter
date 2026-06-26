@@ -86,3 +86,9 @@ Thumbs.db
 wrangler.jsonc
 .alchemy
 .open-next
+
+# Playwright test artifacts (generated)
+apps/web/playwright-report/
+apps/web/test-results/
+apps/web/blob-report/
+apps/web/playwright/.cache/

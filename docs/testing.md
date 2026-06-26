@@ -37,6 +37,19 @@ pnpm exec biome ci     # lint + format + import-sort, read-only (what CI runs)
 
 CI runs all of the above on every PR; deploys are blocked until they pass.
 
+## Package-upgrade smoke test
+
+Two broad "does everything still work" tests act as the safety net for dependency bumps (Hono, oRPC, Zod, Drizzle, `@aws-sdk/*`, TanStack Start/Query, Vite, the Cloudflare runtime, ...):
+
+| File | Covers |
+|---|---|
+| `apps/server/tests/server.test.ts` | Every binding (D1 · KV · R2) and every RPC procedure, in the real miniflare runtime |
+| `apps/web/e2e/smoke.spec.ts` | App renders + the frontend → oRPC → backend round-trip, read-only against the deployed stage |
+
+After upgrading any underlying package, run `pnpm test` (and `pnpm test:e2e` for frontend bumps) — a regression in any layer fails here loudly instead of leaking to prod. They favor **breadth over depth** (one happy path per feature); keep edge cases in dedicated test files.
+
+To make R2 fully exercisable in miniflare, `apps/server/vitest.config.ts` binds a `BUCKET` R2 bucket and a set of dummy `R2_*` credentials — `presign` signs URLs locally (no network), so fake values exercise the AWS SDK path end-to-end. When you add a feature, extend these two files so the upgrade net keeps covering 100% of the surface.
+
 ---
 
 ## Writing server integration tests

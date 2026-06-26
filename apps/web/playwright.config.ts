@@ -7,6 +7,9 @@ const isRemote = !!process.env.PLAYWRIGHT_BASE_URL;
 
 export default defineConfig({
   testDir: './e2e',
+  // Aborts with a clear message if the target URL is another saasflare
+  // product (website / onePay also default to :3000) instead of this app.
+  globalSetup: './e2e/global-setup.ts',
   timeout: 30000,
   retries: 1,
   expect: { timeout: 10000 },

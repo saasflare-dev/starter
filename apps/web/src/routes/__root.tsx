@@ -30,7 +30,11 @@ export const Route = createRootRouteWithContext<{
 
 function RootComponent() {
   return (
-    <html lang="en">
+    // data-app is a stable per-product identity anchor (decoupled from page
+    // copy). The E2E guard (e2e/global-setup.ts) uses it to confirm it's
+    // testing THIS app and not another saasflare product sharing port 3000.
+    // Forked products must give this a unique value.
+    <html lang="en" data-app="saasflare-starter">
       <head>
         <HeadContent />
       </head>

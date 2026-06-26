@@ -26,6 +26,13 @@ export default defineConfig(async () => {
           bindings: {
             CORS_ORIGIN: 'http://localhost:3000',
             TEST_MIGRATIONS: migrations,
+            // Dummy R2 credentials so storage.presign can be smoke-tested.
+            // getSignedUrl() signs locally (no network), so fake values are
+            // enough to exercise the @aws-sdk/* code path end-to-end.
+            R2_ACCOUNT_ID: 'test-account',
+            R2_ACCESS_KEY_ID: 'test-access-key',
+            R2_SECRET_ACCESS_KEY: 'test-secret-key',
+            R2_BUCKET_NAME: 'test-bucket',
           },
           d1Databases: {
             DB: {
@@ -35,6 +42,11 @@ export default defineConfig(async () => {
           kvNamespaces: {
             KV: {
               id: 'test-kv',
+            },
+          },
+          r2Buckets: {
+            BUCKET: {
+              id: 'test-bucket',
             },
           },
         },
