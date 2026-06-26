@@ -1,0 +1,38 @@
+{
+  "name": "@saasflare-dev/tauri",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "app:dev": "tauri dev",
+    "app:build": "tauri build",
+    "tauri": "tauri",
+    "icons": "node scripts/make-icons.mjs",
+    "vite:dev": "vite --port 4200 --strictPort",
+    "vite:build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome lint --write",
+    "format": "biome format --write"
+  },
+  "dependencies": {
+    "@orpc/client": "catalog:",
+    "@tanstack/react-query": "^5.90.12",
+    "@tanstack/react-router": "^1.168.25",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-autostart": "^2",
+    "@tauri-apps/plugin-notification": "^2",
+    "@tauri-apps/plugin-updater": "^2",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "catalog:",
+    "@saasflare-dev/config": "workspace:*",
+    "@tauri-apps/cli": "^2",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "^6.0.1",
+    "typescript": "catalog:",
+    "vite": "^8.0.10"
+  }
+}

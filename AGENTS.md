@@ -15,6 +15,7 @@ DATABASE=d1
 apps/
   server/     Hono backend (port 4000)
   web/        TanStack Start frontend (port 3000)
+  tauri/      Tauri 2.0 desktop template (tray, autostart, updater, oRPC playground)
 packages/
   api/        oRPC API definitions + Zod schemas
   db/         Drizzle schema + migrations
@@ -47,6 +48,7 @@ Read these docs based on the task at hand:
 | Code style, TypeScript rules | [docs/coding-standards.md](docs/coding-standards.md) |
 | Env vars, deployment config | [docs/environment.md](docs/environment.md) |
 | **Frontend: TanStack Start** | [docs/rules-tanstack.md](docs/rules-tanstack.md) |
+| Building a desktop app (Tauri) | [docs/desktop-tauri.md](docs/desktop-tauri.md) |
 | Writing or running tests | [docs/testing.md](docs/testing.md) |
 | Debugging UI issues | [docs/debugging.md](docs/debugging.md) |
 | Deploying, first-time setup, or CI | [docs/deploy.md](docs/deploy.md) |

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saasflare Desktop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        /* The window itself never scrolls — each pane manages its own. */
+        overflow: hidden;
+      }
+      body {
+        -webkit-font-smoothing: antialiased;
+        font-family: 'Geist', 'Inter', system-ui, sans-serif;
+        color: #0f0f12;
+        background: #fff;
+      }
+      /* Scrollable but with no visible scrollbar (content panes). */
+      .hide-scroll {
+        scrollbar-width: none;
+      }
+      .hide-scroll::-webkit-scrollbar {
+        display: none;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      ::selection {
+        background: #3b82f6;
+        color: #fff;
+      }
+      input:focus {
+        outline: none;
+        /* biome-ignore lint/complexity/noImportantStyles: overrides inline input border styles set per-field */
+        border-color: #3b82f6 !important;
+      }
+      ::-webkit-scrollbar {
+        width: 9px;
+        height: 9px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(15, 15, 18, 0.16);
+        border-radius: 999px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+    </style>
+  </head>
+  <body style="margin: 0">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
