@@ -2,12 +2,6 @@
 
 Monorepo: pnpm workspaces · Hono backend · oRPC + TanStack Query · Tailwind V4 + Shadcn/ui · Cloudflare Workers
 
-## Active Stack
-
-```
-FRONTEND=web
-DATABASE=d1
-```
 
 ## Project Structure
 

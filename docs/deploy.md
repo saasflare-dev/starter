@@ -10,6 +10,7 @@ which needs three human-provided secrets:
 | Step | Auto-runnable? | Why / why not |
 |---|---|---|
 | A1 preflight | ✅ | scripted checks |
+| A1.5 set `PROJECT_NAME` | ❌ first deploy only | needs a human-chosen, account-unique name; skip when redeploying |
 | A2 fill `.alchemy.env` | ❌ | CF token **must** be minted via `pnpm dlx alchemy util create-cloudflare-token` (interactive browser OAuth). The dashboard "Edit Cloudflare Workers" template lacks D1, R2 Data, and other scopes alchemy needs — using it will fail at the first D1/R2 resource. Agent cannot drive the OAuth flow, so the user runs the helper and pastes the token back. |
 | A3 per-app `.env` | ❌ if domains/R2 desired | needs human choices |
 | A4 sync secrets | ✅ | `pnpm sync:secrets` |
@@ -18,8 +19,8 @@ which needs three human-provided secrets:
 | A7 PR preview | ✅ | happens automatically on PR |
 | A8 promote prod | ✅ except typed confirmation | requires literal `deploy prod` for safety |
 
-So an agent should pause at A2 / A3 / A8 to collect input, then drive
-the rest end-to-end. Pause points are marked inline with
+So an agent should pause at A1.5 (first deploy only) / A2 / A3 / A8 to
+collect input, then drive the rest end-to-end. Pause points are marked inline with
 **🛑 AGENT PAUSE** blocks — ask the questions in those blocks using the
 user's language and plain words (no jargon), then continue.
 
@@ -81,6 +82,32 @@ gh auth status       # else: gh auth login
 gh repo set-default  # else `gh secret set` fails
 test -d node_modules || pnpm install
 ```
+
+### A1.5. First deploy only — set a unique `PROJECT_NAME`
+
+Both apps ship with `const PROJECT_NAME = 'starter'` hard-coded in their
+alchemy files. This value is the prefix for **every** provisioned resource
+(`${PROJECT_NAME}-{kind}-${stage}` → Workers, KV, D1, R2). It must be
+unique across the Cloudflare account — if it collides with another
+project's resources, `adopt: true` will try to claim them (see the
+`adopt: true` note under [Common issues](#common-issues)).
+
+On the **first deploy of a new product** based on the starter, change
+`PROJECT_NAME` in **both** files to the same new, account-unique name:
+
+- `apps/web/alchemy.run.ts`
+- `apps/server/alchemy.run.ts`
+
+The two values **must match** — `web` resolves the server's URL (and vice
+versa) from `${PROJECT_NAME}-...`, so a mismatch breaks cross-app wiring.
+This is a one-time edit; skip it if you're redeploying an existing
+project (or genuinely deploying the starter itself as `starter`).
+
+> **🛑 AGENT PAUSE — pick the name with the user:** Ask: *"What short,
+> lowercase name should this project use on Cloudflare? It prefixes every
+> resource and must not already exist on your Cloudflare account (it
+> currently says `starter`)."* Then set the same value in both
+> `alchemy.run.ts` files.
 
 ### A2. Create `.alchemy.env`
 
