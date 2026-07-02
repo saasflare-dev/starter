@@ -2,8 +2,10 @@ name: CI / Deploy
 
 # Pipeline:
 #   PR (any branch)         -> test
-#   push dev                -> test -> deploy(dev)  -> e2e against dev deployment URL
-#   push main               -> test -> deploy(prod) -> e2e against prod deployment URL (smoke)
+#   push dev                -> test -> deploy(dev)
+#   push main               -> test -> deploy(prod)
+# (E2E job removed — Playwright browser install repeatedly hung and burned
+#  Actions minutes; run `pnpm test:e2e` locally against a deployment instead.)
 #
 # Required secrets (see docs/deploy.md):
 #   ENV_ALCHEMY                       — CF auth + alchemy state token (control plane)
@@ -60,9 +62,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    outputs:
-      base_url: ${{ steps.url.outputs.base_url }}
-      stage: ${{ steps.url.outputs.stage }}
     steps:
       - uses: actions/checkout@v4
 
@@ -99,50 +98,3 @@ jobs:
         run: |
           STAGE=$([ "${{ github.ref }}" = "refs/heads/main" ] && echo prod || echo dev)
           pnpm run "deploy:$STAGE"
-
-      - name: Resolve frontend URL
-        id: url
-        run: |
-          STAGE=$([ "${{ github.ref }}" = "refs/heads/main" ] && echo prod || echo dev)
-          URLS=$(node \
-            --env-file=.alchemy.env \
-            --env-file="apps/server/.$STAGE.env" \
-            scripts/resolve-urls.ts --stage "$STAGE")
-          echo "base_url=$(echo "$URLS" | jq -r .web)" >> "$GITHUB_OUTPUT"
-          echo "stage=$STAGE" >> "$GITHUB_OUTPUT"
-
-  e2e:
-    name: E2E (deployed)
-    needs: deploy
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-        with:
-          run_install: false
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Install Playwright browsers
-        run: pnpm --filter web exec playwright install --with-deps chromium
-
-      - name: Run E2E against deployed URL
-        run: pnpm --filter web test:e2e
-        env:
-          PLAYWRIGHT_BASE_URL: ${{ needs.deploy.outputs.base_url }}
-
-      - name: Upload Playwright report on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report-${{ github.run_id }}
-          path: apps/web/playwright-report/
-          retention-days: 7
